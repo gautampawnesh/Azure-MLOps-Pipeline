@@ -1,0 +1,9 @@
+click
+environs==7.4.0
+python-dotenv
+environs
+azureml-pipeline-steps
+azureml-pipeline-core
+azureml-sdk
+azureml-pipeline
+azureml-core
