@@ -1,0 +1,47 @@
+parameters:
+- name: display_name
+  displayName: Display name
+  type: string
+  
+- name: python_module
+  displayName: Python module
+  type: string
+  
+- name: arguments
+  displayName: Module arguments
+  type: string
+  default: ''
+  
+- name: conda_env
+  displayName: Conda Environment Name
+  type: string
+  default: 'base'
+  
+
+steps:
+  - task: AzureCLI@1
+    inputs:
+      azureSubscription: "AzureServiceConnection"
+      scriptLocation: inlineScript
+      workingDirectory: $(Build.SourcesDirectory)
+      addSpnToEnvironment: true
+      inlineScript: |
+        eval "$(conda shell.bash hook)"
+        #conda create -n ${{ parameters.conda_env }} python==3.8.0 
+        conda activate ${{ parameters.conda_env }}
+        
+        echo "##[group] Current conda virtual envs"
+        conda env list | sed 's/^/##[debug]/'
+        echo '##[endgroup]'
+        
+        echo "##[group] Current conda packages"
+        conda list | sed 's/^/##[debug]/'
+        echo "##[endgroup]"
+        
+        echo "## Installing packages"
+        python -m pip install -r requirements.txt
+        
+        set -e # fail on error
+        python -m ${{ parameters.python_module }} ${{ parameters.arguments }}
+        
+    displayName: ${{ parameters.display_name }}

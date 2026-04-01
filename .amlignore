@@ -1,0 +1,37 @@
+# Ignore datasets and large files
+data/
+datasets/
+*.csv
+*.tsv
+*.json
+*.parquet
+
+# Ignore model weights and checkpoints
+models/
+checkpoints/
+*.pth
+*.pt
+*.onnx
+*.h5
+
+# Ignore logs and temporary files
+logs/
+*.log
+*.tmp
+*.bak
+
+# Ignore archives and binaries
+*.zip
+*.tar.gz
+*.tgz
+*.whl
+
+# Ignore notebooks if not needed
+*.ipynb
+
+# Ignore virtual environments
+.venv/
+.venv310/
+env/
+__pycache__/
+

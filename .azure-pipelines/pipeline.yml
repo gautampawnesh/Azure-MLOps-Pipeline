@@ -1,0 +1,69 @@
+
+parameters:
+- name: feature_repo_url
+  displayName: Git URL to feature repo
+  type: string
+  default: $(feature_repo)
+
+- name: ml_config_module
+  displayName: Train Config Module
+  type: string
+  default: $(ml_config_module)
+
+- name: env_relative_filepath
+  displayName: Path to env file from feature repo root (e.g. biometric-recognition/configs/.env.azure_config)
+  type: string
+  default: $(env_relative_filepath)
+
+- name: model_id
+  displayName: "Model in Azure registry <azure_model_name>:<version>;!"
+  type: string
+  default: ' '  # allows for empty model variable
+
+- name: description
+  displayName: "Description notes"
+  type: string
+  default: ' '  # allows for empty description variable
+
+- name: run_preprocessing
+  displayName: "Run preprocessing step"
+  type: boolean
+  default: true
+
+- name: run_training
+  displayName: "Run training step"
+  type: boolean
+  default: true
+
+- name: run_evaluation
+  displayName: "Run evaluation step"
+  type: boolean
+  default: true
+
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+
+
+- stage: 'AML_Train'
+  displayName: 'AML Run Train Pipeline'
+  jobs:
+    - template: templates/jobs.ml-pipeline.yml
+      parameters:
+        feature_repo: ${{ parameters.feature_repo_url }}
+        mmlab_config_module: ${{ parameters.ml_config_module }}
+        env_relative_filepath: ${{ parameters.env_relative_filepath }}
+        model_id: ${{ parameters.model_id }}
+        description: ${{ parameters.description }}
+        run_preprocessing: ${{ parameters.run_preprocessing }}
+        run_training: ${{ parameters.run_training }}
+        run_evaluation: ${{ parameters.run_evaluation }}

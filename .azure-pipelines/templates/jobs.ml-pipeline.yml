@@ -1,0 +1,65 @@
+parameters:
+- name: feature_repo
+  displayName: Git url to repo
+  type: string
+  
+- name: ml_config_module
+  displayName: Training Config Module
+  type: string
+  
+- name: env_relative_filepath
+  displayName: Path to env file from feature repo root
+  type: string
+  
+- name: model_id
+  displayName: "<model_name>:<version>"
+  type: string
+  
+- name: description
+  displayName: "Description for run"
+  type: string
+
+- name: run_preprocessing
+  displayName: "Run training step"
+  type: boolean
+
+- name: run_training
+  displayName: "Run training step"
+  type: boolean
+  
+- name: run_evaluation
+  displayName: "Run evaluation step"
+  type: boolean
+  
+  
+jobs:
+  - job: "AML_build_run_pipeline"
+    displayName: "AML build and run pipeline"
+    timeoutInMinutes: 0
+    
+    steps: 
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: 'env | sort'
+      - template: steps.pymodule_conda.yml
+        parameters:
+          conda_env: $(cat ./dependency/dependencies.yml | yq '.name')
+          display_name: 'Build and Run AML Train Pipeline'
+          python_module: ml_service.build_pipeline
+          arguments: >-
+            --ml_config_module "${{ parameters.ml_config_module }}"
+            --env_relative_filepath "${{ parameters.env_relative_filepath }}"
+            --feature_repo_url "${{ parameters.feature_repo }}"
+            --model_id "${{ parameters.model_id }}"
+            --description "${{ parameters.description }}"
+            --run_preprocessing "${{ parameters.run_preprocessing }}"
+            --run_training "${{ parameters.run_training }}"
+            --run_evaluation "${{ parameters.run_evaluation }}"
+          
+  
+  
+  
+  
+  
+  

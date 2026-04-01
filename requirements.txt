@@ -7,3 +7,4 @@ azureml-pipeline-core
 azureml-sdk
 azureml-pipeline
 azureml-core
+marshmallow==3.26.2
